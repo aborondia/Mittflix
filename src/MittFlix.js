@@ -18,10 +18,10 @@ function App() {
 	const [watchList, setwatchList] = useState([])
 	const apiKey = '45db535623e9d1a035b7e71efd956de0';
 	const providers = [
-		{ name: 'Netflix', id: 8 },
-		{ name: 'Crave', id: 230 },
-		{ name: 'Disney', id: 337 },
-		{ name: 'Apple', id: 350 }
+		{ label: 'Netflix', id: 8 },
+		{ label: 'Crave', id: 230 },
+		{ label: 'Disney', id: 337 },
+		{ label: 'Apple', id: 350 }
 	];
 	const popularShowsURL = {
 		get: (id) => {
@@ -50,16 +50,15 @@ function App() {
 
 		for (let provider of providers) {
 			const shows = await getData(popularShowsURL.get(provider.id))
-				.then((showList) => dataPromises.push(showList))
+				.then((data) => {
+					const promise = data;
+					showLists.push({ label: provider.label, showList: promise });
+					dataPromises.push(promise);
+				})
 				.catch(error => console.log(error));
 		}
 
-		Promise.all(dataPromises)
-			.then((results) => {
-				for (let result of results) {
-					showLists.push({ label: 'test', showList: result.results })
-				}
-			})
+		await Promise.all(dataPromises)
 			.then(() => setPopularShows(showLists))
 	}
 

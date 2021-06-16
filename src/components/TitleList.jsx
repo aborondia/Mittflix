@@ -6,7 +6,6 @@ const TitleList = ({ label, shows }) => {
 			<div className="title">
 				<h1>{label}</h1>
 				<div className="titles-wrapper">
-
 					{shows.map((show) => {
 						return (<Show
 							show={show}
