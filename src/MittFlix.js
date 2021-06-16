@@ -1,68 +1,100 @@
 import './App.css';
 import './reset.css';
-import { useState, setState } from 'react';
-import { Switch, Route, Link } from "react-router-dom";
+import { useState } from 'react';
+import { Switch, Route, Link, Redirect } from "react-router-dom";
 import Main from './components/Main';
-import Search from './components/Search';
+import SearchResults from './components/SearchResults';
 import WatchList from './components/WatchList';
+import TitleList from './components/TitleList';
 import Header from './components/Header';
 import Details from './components/Details';
 import { getData } from './services/apiHandler';
 
 function App() {
-  const [popularShows, setPopularShows] = useState([])
-  const apiKey = '45db535623e9d1a035b7e71efd956de0';
-  const providers = [
-    { name: 'Netflix', id: 8 },
-    { name: 'Crave', id: 230 },
-    { name: 'Disney', id: 337 },
-    { name: 'Apple', id: 350 }
-  ];
-  const popularShowsURL = {
-    get: (id) => {
-      return `https://api.themoviedb.org/3/discover/tv?api_key=45db535623e9d1a035b7e71efd956de0&language=en-CA&sort_by=popularity.desc&page=1&with_watch_providers=${id}&watch_region=CA`
-    }
-  };
 
-  const getPopularShows = async () => {
-    const showLists = [];
-    for (let provider of providers) {
-      const shows = await getData(popularShowsURL.get(provider.id));
-      showLists.push({ providerName: provider.name, showList: shows.results })
-    }
+	const [pageRedirect, setPageRedirect] = useState('');
+	const [popularShows, setPopularShows] = useState([])
+	const [searchResults, setSearchResults] = useState([])
+	const [watchList, setwatchList] = useState([])
+	const apiKey = '45db535623e9d1a035b7e71efd956de0';
+	const providers = [
+		{ name: 'Netflix', id: 8 },
+		{ name: 'Crave', id: 230 },
+		{ name: 'Disney', id: 337 },
+		{ name: 'Apple', id: 350 }
+	];
+	const popularShowsURL = {
+		get: (id) => {
+			return `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-CA&sort_by=popularity.desc&page=1&with_watch_providers=${id}&watch_region=CA`;
+		}
+	};
 
-    return showLists;
-  }
+	const searchURL = {
+		get: (searchInput) => {
+			return `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&language=en-CA&page=1&include_adult=false&query=${searchInput}`;
+		}
+	};
 
-  useState(() => {
-    getPopularShows()
-      .then((data) => setPopularShows(data))
-  }, [])
+	const getSearchResults = (event, searchInput) => {
+		event.preventDefault();
+		const URL = searchURL.get(searchInput);
+		getData(URL)
+			.then(data => setSearchResults({ label: 'Search Results', showList: data }))
+			.then(() => setPageRedirect('search'))
+			.catch(error => console.log(error))
+	}
 
-  return (
-    <>
+	const getPopularShows = async () => {
+		const dataPromises = [];
+		const showLists = [];
 
-      <Header />
-      <Switch>
-        <Route exact path='/'>
-          <Main showsByProvider={popularShows} />
-        </Route>
+		for (let provider of providers) {
+			const shows = await getData(popularShowsURL.get(provider.id))
+				.then((showList) => dataPromises.push(showList))
+				.catch(error => console.log(error));
+		}
 
-        <Route exact path='/search'>
-          <Search />
-        </Route>
+		Promise.all(dataPromises)
+			.then((results) => {
+				for (let result of results) {
+					showLists.push({ label: 'test', showList: result.results })
+				}
+			})
+			.then(() => setPopularShows(showLists))
+	}
 
-        <Route exact path='/watch-list'>
-          <WatchList />
-        </Route>
+	useState(() => {
+		getPopularShows()
+	}, [])
 
-        <Route exact path='/dunno-yet'>
-          <Details />
-        </Route>
+	return (
+		<>
+			<Redirect to={`/${pageRedirect}`} />
+			<Header
+				handleSubmit={getSearchResults}
+			/>
+			<Switch>
+				<Route exact path='/'>
+					<Main showsToDisplay={popularShows} />
+				</Route>
 
-      </Switch>
-    </>
-  );
+				<Route exact path='/search'>
+					<SearchResults
+						label={searchResults.label}
+						shows={searchResults.showList} />
+				</Route>
+
+				<Route exact path='/watch-list'>
+					<WatchList />
+				</Route>
+
+				<Route exact path='/dunno-yet'>
+					<Details />
+				</Route>
+
+			</Switch>
+		</>
+	);
 }
 
 export default App;

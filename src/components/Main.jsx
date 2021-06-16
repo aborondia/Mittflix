@@ -1,12 +1,12 @@
 import TitleList from './TitleList';
 
-const Main = ({ showsByProvider }) => {
+const Main = ({ showsToDisplay }) => {
 
 	return (<>
-		{showsByProvider.map((providerList, index) => {
+		{showsToDisplay.map((providerList, index) => {
 			return (
 				<TitleList
-					provider={providerList.providerName}
+					label={providerList.label}
 					shows={providerList.showList}
 					key={index}
 				/>)
