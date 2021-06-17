@@ -15,6 +15,7 @@ function App() {
 	const [pageRedirect, setPageRedirect] = useState('');
 	const [popularShows, setPopularShows] = useState([])
 	const [searchResults, setSearchResults] = useState([])
+	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
 	const [watchList, setwatchList] = useState([])
 	const apiKey = '45db535623e9d1a035b7e71efd956de0';
 	const providers = [
@@ -34,6 +35,10 @@ function App() {
 			return `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&language=en-CA&page=1&include_adult=false&query=${searchInput}`;
 		}
 	};
+
+	const getShowDetails = (show) => {
+		setSelectedMovieDetails(show);
+	}
 
 	const getSearchResults = async (event, searchInput) => {
 		event.preventDefault();
@@ -75,21 +80,23 @@ function App() {
 			/>
 			<Switch>
 				<Route exact path='/'>
-					<Main showsToDisplay={popularShows} />
+					<Main showsToDisplay={popularShows} handleClick={getShowDetails} />
 				</Route>
 
 				<Route exact path='/search'>
 					<SearchResults
 						label={searchResults.label}
-						shows={searchResults.showList} />
+						shows={searchResults.showList}
+						handleClick={getShowDetails}
+					/>
 				</Route>
 
 				<Route exact path='/watch-list'>
 					<WatchList />
 				</Route>
 
-				<Route exact path='/dunno-yet'>
-					<Details />
+				<Route path='/details'>
+					<Details show={selectedMovieDetails} />
 				</Route>
 
 			</Switch>

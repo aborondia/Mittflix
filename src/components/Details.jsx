@@ -1,15 +1,13 @@
-const Details = () => {
-    return (       <div className="show-details">
-    <img src="https://image.tmdb.org/t/p/original/daXzoOWNBwSoG03RFh5tEqzl1sH.jpg" alt="" />
-    <div className="show-details-inner">
-      <h1>Love, Death &amp; Robots</h1>
-      <div className="description">
-        Terrifying creatures, wicked surprises and dark comedy converge in this NSFW anthology of animated stories presented by Tim Miller and David
-        Fincher.
+const Details = ({ show }) => {
+  return (
+    <div className="show-details">
+      <img src={`https://image.tmdb.org/t/p/original/${show.backdrop_path}`} alt={`${show.original_name} backdrop`} />
+      <div className="show-details-inner">
+        <h1>{show.original_name}</h1>
+        <div className="description">{show.overview}</div>
+        <button className="add-to-watchlist">+ Add to watch list</button>
       </div>
-      <button className="add-to-watchlist">+ Add to watch list</button>
-    </div>
-  </div> );
+    </div>);
 }
- 
+
 export default Details;
