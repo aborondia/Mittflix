@@ -41,11 +41,15 @@ function App() {
 
 		if (showInWatchList) {
 			setWatchList(watchList.filter(watchListShow => watchListShow?.id !== show.id))
-			return;
 		}
 
-		newWatchList.push(show);
-		setWatchList(newWatchList);
+		if (!showInWatchList) {
+			newWatchList.push(show);
+			setWatchList(newWatchList);
+		}
+
+		localStorage.clear();
+		localStorage.setItem('watchList', JSON.stringify(watchList))
 	}
 
 	const getShowDetails = (show) => {
