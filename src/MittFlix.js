@@ -3,14 +3,12 @@ import './reset.css';
 import { useState, useEffect } from 'react';
 import { Switch, Route } from "react-router-dom";
 import Main from './components/Main';
-import SearchResults from './components/SearchResults';
 import WatchList from './components/WatchList';
 import Header from './components/Header';
 import Details from './components/Details';
 import { getData } from './services/apiHandler';
 
 function App() {
-
 	const [popularShows, setPopularShows] = useState([])
 	const [searchResults, setSearchResults] = useState([])
 	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
@@ -61,7 +59,7 @@ function App() {
 		event.preventDefault();
 		const URL = searchURL.get(searchInput);
 		await getData(URL)
-			.then(data => setSearchResults({ label: 'Search Results', showList: data.results }))
+			.then(data => setSearchResults({ label: 'Search Results', showList: data }))
 			.catch(error => console.log(error))
 	}
 
@@ -92,6 +90,7 @@ function App() {
 		setWatchList(JSON.parse(localStorage.watchList));
 	}, [])
 
+
 	return (
 		<>
 			<Header
@@ -99,7 +98,8 @@ function App() {
 			/>
 			<Switch>
 				<Route exact path='/'>
-					<Main showsToDisplay={popularShows}
+					<Main
+						showsToDisplay={popularShows}
 						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
@@ -107,9 +107,8 @@ function App() {
 				</Route>
 
 				<Route exact path='/search'>
-					<SearchResults
-						label={searchResults.label}
-						shows={searchResults.showList}
+					<Main
+						showsToDisplay={[searchResults]}
 						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
