@@ -3,7 +3,6 @@ import './reset.css';
 import { useState, useEffect } from 'react';
 import { Switch, Route } from "react-router-dom";
 import Main from './components/Main';
-import WatchList from './components/WatchList';
 import Header from './components/Header';
 import Details from './components/Details';
 import { getData } from './services/apiHandler';
@@ -18,7 +17,7 @@ function App() {
 		{ label: 'Netflix', id: 8 },
 		{ label: 'Crave', id: 230 },
 		{ label: 'Disney', id: 337 },
-		{ label: 'Apple', id: 350 }
+		{ label: 'Apple Plus', id: 350 }
 	];
 	const popularShowsURL = {
 		get: (id) => {
@@ -87,6 +86,7 @@ function App() {
 
 	useEffect(() => {
 		getPopularShows();
+		
 		setWatchList(JSON.parse(localStorage.watchList));
 	}, [])
 
@@ -116,8 +116,8 @@ function App() {
 				</Route>
 
 				<Route exact path='/watch-list'>
-					<WatchList
-						watchList={watchList}
+					<Main
+						showsToDisplay={[{ label: 'Watch List', showList: watchList }]}
 						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
