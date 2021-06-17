@@ -35,11 +35,11 @@ function App() {
 		}
 	};
 
-	const getSearchResults = (event, searchInput) => {
+	const getSearchResults = async (event, searchInput) => {
 		event.preventDefault();
 		const URL = searchURL.get(searchInput);
-		getData(URL)
-			.then(data => setSearchResults({ label: 'Search Results', showList: data }))
+		await getData(URL)
+			.then(data => setSearchResults({ label: 'Search Results', showList: data.results }))
 			.then(() => setPageRedirect('search'))
 			.catch(error => console.log(error))
 	}
@@ -60,6 +60,7 @@ function App() {
 
 		await Promise.all(dataPromises)
 			.then(() => setPopularShows(showLists))
+			.then(() => setPageRedirect(''))
 	}
 
 	useState(() => {
@@ -68,7 +69,7 @@ function App() {
 
 	return (
 		<>
-			<Redirect to={`/${pageRedirect}`} />
+			{/* <Redirect to={`/${pageRedirect}`} /> */}
 			<Header
 				handleSubmit={getSearchResults}
 			/>
