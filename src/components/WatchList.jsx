@@ -1,6 +1,6 @@
 import Show from "./Show";
 
-const WatchList = ({ watchList, handleClick, handleToggle }) => {
+const WatchList = ({ watchList, handleClick, handleToggle, inWatchList }) => {
     return (
         <div className="titleList">
             <div className="title">
@@ -10,6 +10,7 @@ const WatchList = ({ watchList, handleClick, handleToggle }) => {
                         return (
                             <Show
                                 show={show}
+                                inWatchList={inWatchList}
                                 handleClick={handleClick}
                                 handleToggle={handleToggle}
                                 key={show.id}

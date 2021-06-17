@@ -1,11 +1,10 @@
 import './App.css';
 import './reset.css';
 import { useState, useEffect } from 'react';
-import { Switch, Route, Link, Redirect } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Main from './components/Main';
 import SearchResults from './components/SearchResults';
 import WatchList from './components/WatchList';
-import TitleList from './components/TitleList';
 import Header from './components/Header';
 import Details from './components/Details';
 import { getData } from './services/apiHandler';
@@ -34,6 +33,10 @@ function App() {
 			return `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&language=en-CA&page=1&include_adult=false&query=${searchInput}`;
 		}
 	};
+
+	const checkWatchList = (show) => {
+		return watchList.some(showInWatchList => showInWatchList.id === show.id)
+	}
 
 	const toggleWatchedList = (show) => {
 		const showInWatchList = watchList.find(watchListShow => watchListShow?.id === show.id);
@@ -67,7 +70,7 @@ function App() {
 		const showLists = [];
 
 		for (let provider of providers) {
-			const shows = await getData(popularShowsURL.get(provider.id))
+			await getData(popularShowsURL.get(provider.id))
 				.then((data) => {
 					const promise = data;
 					showLists.push({ label: provider.label, showList: promise });
@@ -84,11 +87,9 @@ function App() {
 		localStorage.setItem('watchList', JSON.stringify(watchList))
 	}, [watchList])
 
-	useState(() => {
+	useEffect(() => {
 		getPopularShows();
-		if (localStorage.length > 0) {
 			setWatchList(JSON.parse(localStorage.watchList));
-		}
 	}, [])
 
 	return (
@@ -99,6 +100,7 @@ function App() {
 			<Switch>
 				<Route exact path='/'>
 					<Main showsToDisplay={popularShows}
+						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
 					/>
@@ -108,6 +110,7 @@ function App() {
 					<SearchResults
 						label={searchResults.label}
 						shows={searchResults.showList}
+						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
 					/>
@@ -116,6 +119,7 @@ function App() {
 				<Route exact path='/watch-list'>
 					<WatchList
 						watchList={watchList}
+						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
 						handleToggle={toggleWatchedList}
 					/>

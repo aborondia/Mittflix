@@ -1,8 +1,9 @@
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const Show = ({ show, handleClick, handleToggle }) => {
+const Show = ({ show, handleClick, handleToggle, inWatchList }) => {
 	const image = show.poster_path;
 	const rating = show.vote_average;
+	const saved = inWatchList(show);
 	return (
 		<div className="movie" onClick={() => handleClick(show)}>
 			<Link to={`/details/${show.id}`}>
@@ -13,7 +14,7 @@ const Show = ({ show, handleClick, handleToggle }) => {
 					<div className="plot">{show.overview}</div>
 				</div>
 			</Link>
-			<div data-toggled="false" className="listToggle" onClick={() => handleToggle(show)}>
+			<div data-toggled={saved} className="listToggle" onClick={() => handleToggle(show)}>
 				<div><i className="fa fa-fw fa-plus"></i><i className="fa fa-fw fa-check"></i></div>
 			</div>
 		</div>);

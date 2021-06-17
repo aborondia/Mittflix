@@ -1,6 +1,6 @@
 import Show from "./Show";
 
-const SearchResults = ({ label, shows, handleClick, handleToggle }) => {
+const SearchResults = ({ label, shows, handleClick, handleToggle, inWatchList }) => {
 	return (
 		<div className="titleList">
 			<div className="title">
@@ -10,6 +10,7 @@ const SearchResults = ({ label, shows, handleClick, handleToggle }) => {
 						return (
 							<Show
 								show={show}
+								inWatchList={inWatchList}
 								handleClick={handleClick}
 								handleToggle={handleToggle}
 								key={show.id}
