@@ -89,7 +89,7 @@ function App() {
 
 	useEffect(() => {
 		getPopularShows();
-			setWatchList(JSON.parse(localStorage.watchList));
+		setWatchList(JSON.parse(localStorage.watchList));
 	}, [])
 
 	return (
@@ -126,7 +126,11 @@ function App() {
 				</Route>
 
 				<Route path='/details'>
-					<Details show={selectedMovieDetails} />
+					<Details
+						show={selectedMovieDetails}
+						inWatchList={checkWatchList}
+						handleToggle={toggleWatchedList}
+					/>
 				</Route>
 
 			</Switch>
