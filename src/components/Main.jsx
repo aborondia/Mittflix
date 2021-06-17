@@ -1,6 +1,6 @@
 import TitleList from './TitleList';
 
-const Main = ({ showsToDisplay, handleClick }) => {
+const Main = ({ showsToDisplay, handleClick, handleToggle }) => {
 	return (<>
 		{showsToDisplay.map((providerList, index) => {
 			return (
@@ -8,6 +8,7 @@ const Main = ({ showsToDisplay, handleClick }) => {
 					label={providerList.label}
 					shows={providerList.showList.results}
 					handleClick={handleClick}
+					handleToggle={handleToggle}
 					key={index}
 				/>)
 		})}

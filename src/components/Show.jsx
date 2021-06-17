@@ -1,6 +1,6 @@
 import { Link, Redirect } from "react-router-dom";
 
-const Show = ({ show, handleClick }) => {
+const Show = ({ show, handleClick, handleToggle }) => {
 	const image = show.poster_path;
 	const rating = show.vote_average;
 	return (
@@ -13,7 +13,7 @@ const Show = ({ show, handleClick }) => {
 					<div className="plot">{show.overview}</div>
 				</div>
 			</Link>
-			<div data-toggled="false" className="listToggle">
+			<div data-toggled="false" className="listToggle" onClick={() => handleToggle(show)}>
 				<div><i className="fa fa-fw fa-plus"></i><i className="fa fa-fw fa-check"></i></div>
 			</div>
 		</div>);

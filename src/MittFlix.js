@@ -12,11 +12,10 @@ import { getData } from './services/apiHandler';
 
 function App() {
 
-	const [pageRedirect, setPageRedirect] = useState('');
 	const [popularShows, setPopularShows] = useState([])
 	const [searchResults, setSearchResults] = useState([])
 	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
-	const [watchList, setwatchList] = useState([])
+	const [watchList, setWatchList] = useState([])
 	const apiKey = '45db535623e9d1a035b7e71efd956de0';
 	const providers = [
 		{ label: 'Netflix', id: 8 },
@@ -36,6 +35,19 @@ function App() {
 		}
 	};
 
+	const toggleWatchedList = (show) => {
+		const showInWatchList = watchList.find(watchListShow => watchListShow?.id === show.id);
+		const newWatchList = [...watchList];
+
+		if (showInWatchList) {
+			setWatchList(watchList.filter(watchListShow => watchListShow?.id !== show.id))
+			return;
+		}
+
+		newWatchList.push(show);
+		setWatchList(newWatchList);
+	}
+
 	const getShowDetails = (show) => {
 		setSelectedMovieDetails(show);
 	}
@@ -45,7 +57,6 @@ function App() {
 		const URL = searchURL.get(searchInput);
 		await getData(URL)
 			.then(data => setSearchResults({ label: 'Search Results', showList: data.results }))
-			.then(() => setPageRedirect('search'))
 			.catch(error => console.log(error))
 	}
 
@@ -65,22 +76,24 @@ function App() {
 
 		await Promise.all(dataPromises)
 			.then(() => setPopularShows(showLists))
-			.then(() => setPageRedirect(''))
 	}
 
 	useState(() => {
 		getPopularShows()
 	}, [])
+	console.log(watchList)
 
 	return (
 		<>
-			{/* <Redirect to={`/${pageRedirect}`} /> */}
 			<Header
 				handleSubmit={getSearchResults}
 			/>
 			<Switch>
 				<Route exact path='/'>
-					<Main showsToDisplay={popularShows} handleClick={getShowDetails} />
+					<Main showsToDisplay={popularShows}
+						handleClick={getShowDetails}
+						handleToggle={toggleWatchedList}
+					/>
 				</Route>
 
 				<Route exact path='/search'>
@@ -88,6 +101,7 @@ function App() {
 						label={searchResults.label}
 						shows={searchResults.showList}
 						handleClick={getShowDetails}
+						handleToggle={toggleWatchedList}
 					/>
 				</Route>
 
