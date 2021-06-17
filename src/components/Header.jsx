@@ -13,15 +13,15 @@ const Header = ({ handleSubmit }) => {
 			<div id="navigation" className="navigation">
 				<nav>
 					<ul>
-						<li><a href="/my-watch-list">Watch List</a></li>
+						<li><Link to="/watch-list">Watch List</Link></li>
 					</ul>
 				</nav>
 			</div>
 			<form id="search" className="search" onSubmit={(event) => {
 				setSearchInput('')
 				handleSubmit(event, searchInput)
-				.then(()=>history.push('/search'))
-				
+					.then(() => history.push('/search'))
+
 			}}>
 				<input type="search" placeholder="Search for a title..." value={searchInput} onChange={(event) => setSearchInput(event.target.value)} />
 				<div className="searchResults"></div>

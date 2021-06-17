@@ -110,7 +110,11 @@ function App() {
 				</Route>
 
 				<Route exact path='/watch-list'>
-					<WatchList />
+					<WatchList
+						watchList={watchList}
+						handleClick={getShowDetails}
+						handleToggle={toggleWatchedList}
+					/>
 				</Route>
 
 				<Route path='/details'>
