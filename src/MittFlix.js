@@ -1,6 +1,6 @@
 import './App.css';
 import './reset.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Switch, Route, Link, Redirect } from "react-router-dom";
 import Main from './components/Main';
 import SearchResults from './components/SearchResults';
@@ -48,8 +48,6 @@ function App() {
 			setWatchList(newWatchList);
 		}
 
-		localStorage.clear();
-		localStorage.setItem('watchList', JSON.stringify(watchList))
 	}
 
 	const getShowDetails = (show) => {
@@ -82,10 +80,16 @@ function App() {
 			.then(() => setPopularShows(showLists))
 	}
 
+	useEffect(() => {
+		localStorage.setItem('watchList', JSON.stringify(watchList))
+	}, [watchList])
+
 	useState(() => {
-		getPopularShows()
+		getPopularShows();
+		if (localStorage.length > 0) {
+			setWatchList(JSON.parse(localStorage.watchList));
+		}
 	}, [])
-	console.log(watchList)
 
 	return (
 		<>
