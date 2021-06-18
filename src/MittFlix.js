@@ -1,133 +1,129 @@
-import './App.css';
-import './reset.css';
-import { useState, useEffect } from 'react';
-import { Switch, Route, useHistory, useLocation } from "react-router-dom";
-import Main from './components/Main';
-import Header from './components/Header';
-import Details from './components/Details';
-import Search from './components/Search';
-import { getData } from './services/apiHandler';
-
+import "./App.css";
+import "./reset.css";
+import { useState, useEffect } from "react";
+import { Switch, Route, useHistory } from "react-router-dom";
+import Main from "./components/Main";
+import Header from "./components/Header";
+import Details from "./components/Details";
+import Search from "./components/Search";
+import { getData } from "./services/apiHandler";
 
 function App() {
-	const history = useHistory();
-	const location = useLocation();
-	const [popularShows, setPopularShows] = useState([])
-	const [searchResults, setSearchResults] = useState([])
-	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
-	const [watchList, setWatchList] = useState([])
-	const apiKey = '45db535623e9d1a035b7e71efd956de0';
-	const providers = [
-		{ label: 'Netflix', id: 8 },
-		{ label: 'Crave', id: 230 },
-		{ label: 'Disney', id: 337 },
-		{ label: 'Apple Plus', id: 350 }
-	];
-	const popularShowsURL = {
-		get: (id) => {
-			return `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-CA&sort_by=popularity.desc&page=1&with_watch_providers=${id}&watch_region=CA`;
-		}
-	};
+  const history = useHistory();
+  const [popularShows, setPopularShows] = useState([]);
+  const [watchList, setWatchList] = useState([]);
+  const apiKey = "45db535623e9d1a035b7e71efd956de0";
+  const providers = [
+    { label: "Netflix", id: 8 },
+    { label: "Crave", id: 230 },
+    { label: "Disney", id: 337 },
+    { label: "Apple Plus", id: 350 },
+  ];
+  const popularShowsURL = {
+    get: (id) => {
+      return `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-CA&sort_by=popularity.desc&page=1&with_watch_providers=${id}&watch_region=CA`;
+    },
+  };
 
-	const checkWatchList = (show) => {
-		return watchList.some(showInWatchList => showInWatchList.id === show.id)
-	}
+  const checkWatchList = (show) => {
+    return watchList.some((showInWatchList) => showInWatchList.id === show.id);
+  };
 
-	const toggleWatchedList = (show) => {
-		const showInWatchList = watchList.find(watchListShow => watchListShow?.id === show.id);
-		const newWatchList = [...watchList];
+  const toggleWatchedList = (show) => {
+    const showInWatchList = watchList.find(
+      (watchListShow) => watchListShow?.id === show.id
+    );
+    const newWatchList = [...watchList];
 
-		if (showInWatchList) {
-			setWatchList(watchList.filter(watchListShow => watchListShow?.id !== show.id))
-		}
+    if (showInWatchList) {
+      setWatchList(
+        watchList.filter((watchListShow) => watchListShow?.id !== show.id)
+      );
+    }
 
-		if (!showInWatchList) {
-			newWatchList.push(show);
-			setWatchList(newWatchList);
-		}
+    if (!showInWatchList) {
+      newWatchList.push(show);
+      setWatchList(newWatchList);
+    }
+  };
 
-	}
+  const getShowDetails = (event, show) => {
+    if (event.target.classList.contains("fa")) {
+      return;
+    }
+    history.push({
+      pathname: "/details",
+      search: `id=${show.id}`,
+    });
+  };
 
-	const getShowDetails = (show) => {
-		history.push(
-			{
-				pathname: '/details',
-				search: `id=${show.id}`,
-			})
-	}
+  const getPopularShows = async () => {
+    const dataPromises = [];
+    const showLists = [];
 
-	const getPopularShows = async () => {
-		const dataPromises = [];
-		const showLists = [];
+    for (let provider of providers) {
+      await getData(popularShowsURL.get(provider.id))
+        .then((data) => {
+          const promise = data;
+          showLists.push({ label: provider.label, showList: promise });
+          dataPromises.push(promise);
+        })
+        .catch((error) => console.log(error));
+    }
 
-		for (let provider of providers) {
-			await getData(popularShowsURL.get(provider.id))
-				.then((data) => {
-					const promise = data;
-					showLists.push({ label: provider.label, showList: promise });
-					dataPromises.push(promise);
-				})
-				.catch(error => console.log(error));
-		}
+    await Promise.all(dataPromises).then(() => setPopularShows(showLists));
+  };
 
-		await Promise.all(dataPromises)
-			.then(() => setPopularShows(showLists))
-	}
+  useEffect(() => {
+    getPopularShows();
+    setWatchList(JSON.parse(localStorage.watchList));
+  }, []);
 
-	useEffect(() => {
+  useEffect(() => {
+    localStorage.setItem("watchList", JSON.stringify(watchList));
+  }, [watchList]);
 
-		getPopularShows();
-		setWatchList(JSON.parse(localStorage.watchList));
-	}, [])
+  return (
+    <>
+      <Header
+      // handleSubmit={getSearchResults}
+      />
+      <Switch>
+        <Route exact path="/">
+          <Main
+            showsToDisplay={popularShows}
+            inWatchList={checkWatchList}
+            handleClick={getShowDetails}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
 
-	useEffect(() => {
-		localStorage.setItem('watchList', JSON.stringify(watchList))
-	}, [watchList])
+        <Route exact path="/search">
+          <Search
+            inWatchList={checkWatchList}
+            handleClick={getShowDetails}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
 
-	return (
-		<>
-			<Header
-			// handleSubmit={getSearchResults}
-			/>
-			<Switch>
-				<Route exact path='/'>
-					<Main
-						showsToDisplay={popularShows}
-						inWatchList={checkWatchList}
-						handleClick={getShowDetails}
-						handleToggle={toggleWatchedList}
-					/>
-				</Route>
+        <Route exact path="/watch-list">
+          <Main
+            showsToDisplay={[{ label: "Watch List", showList: watchList }]}
+            inWatchList={checkWatchList}
+            handleClick={getShowDetails}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
 
-				<Route exact path='/search'>
-					<Search
-						showsToDisplay={[searchResults]}
-						inWatchList={checkWatchList}
-						handleClick={getShowDetails}
-						handleToggle={toggleWatchedList}
-					/>
-				</Route>
-
-				<Route exact path='/watch-list'>
-					<Main
-						showsToDisplay={[{ label: 'Watch List', showList: watchList }]}
-					// inWatchList={checkWatchList}
-					// handleClick={getShowDetails}
-					// handleToggle={toggleWatchedList}
-					/>
-				</Route>
-
-				<Route path='/details'>
-					<Details
-						show={selectedMovieDetails}
-						inWatchList={checkWatchList}
-						handleToggle={toggleWatchedList}
-					/>
-				</Route>
-
-			</Switch>
-		</>
-	);
+        <Route path="/details">
+          <Details
+            inWatchList={checkWatchList}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
+      </Switch>
+    </>
+  );
 }
 
 export default App;

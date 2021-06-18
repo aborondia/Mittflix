@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory} from "react-router-dom";
 
 const Header = ({ handleSubmit }) => {
 	const [searchInput, setSearchInput] = useState('');
 	const history = useHistory();
-	const location = useLocation();
 
 	return (
 		<header className="header">
@@ -22,7 +21,7 @@ const Header = ({ handleSubmit }) => {
 				history.push(
 					{
 						pathname: '/search',
-						search: `query=${searchInput}&label='Search Results'`,
+						search: `label='Search Results&query=${searchInput}'`,
 					})
 				setSearchInput('')
 			}}>

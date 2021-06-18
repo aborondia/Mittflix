@@ -1,29 +1,27 @@
-import { Link } from "react-router-dom";
-import { useState, useEffect } from 'react';
-
 const Show = ({ show, inWatchList, handleClick, handleToggle }) => {
-	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
-	const [watchList, setWatchList] = useState([])
-	const image = show.poster_path;
-	const rating = show.vote_average;
+  const image = show.poster_path;
+  const rating = show.vote_average;
+  const saved = inWatchList(show);
 
-	const saved = inWatchList(show);
-
-
-	return (
-		<div className="movie" onClick={() => handleClick(show)}>
-			<Link to={`/details/${show.id}`}>
-				<img src={image ? `https://image.tmdb.org/t/p/w500${image}` : '/image-not-available.jpg'} alt={`${show.original_name} poster`} />
-				<div className="overlay">
-					<div className="title">{show.original_name}</div>
-					<div className="rating">{rating !== 0 ? `${rating}/10` : 'No Rating Available'}</div>
-					<div className="plot">{show.overview}</div>
-				</div>
-			</Link>
-			<div data-toggled={saved} className="listToggle" onClick={() => handleToggle(show)}>
-				<div><i className="fa fa-fw fa-plus"></i><i className="fa fa-fw fa-check"></i></div>
-			</div>
-		</div>);
-}
+  return (
+    <div className="movie" onClick={(event) => handleClick(event, show)}>
+      <img
+        src={image ? `https://image.tmdb.org/t/p/w500${image}` : "/image-not-available.jpg"}
+        alt={`${show.original_name} poster`}
+      />
+      <div className="overlay">
+        <div className="title">{show.original_name}</div>
+        <div className="rating">{rating !== 0 ? `${rating}/10` : "No Rating Available"}</div>
+        <div className="plot">{show.overview}</div>
+      </div>
+      <div data-toggled={saved} className="listToggle" onClick={() => handleToggle(show)}>
+        <div>
+          <i className="fa fa-fw fa-plus"></i>
+          <i className="fa fa-fw fa-check"></i>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Show;
