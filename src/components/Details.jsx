@@ -1,40 +1,29 @@
-import { getData } from "../services/apiHandler";
-import {  useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { getShowDetailsData } from "../services/apiHandler";
+import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
 const Details = ({ inWatchList, handleToggle }) => {
   const location = useLocation();
   const id = new URLSearchParams(location.search).get("id");
   const [details, setDetails] = useState({});
 
-  const apiKey = "45db535623e9d1a035b7e71efd956de0";
-
-  const searchURL = {
-    get: (id) => {
-      return `https://api.themoviedb.org/3/tv/${id}?api_key=${apiKey}&language=en-US`;
-    },
-  };
-
   const getDetails = async () => {
-    getData(searchURL.get(id))
+    getShowDetailsData(id)
       .then((data) => setDetails(data))
       .catch((error) => console.log(error));
   };
 
-  useEffect(() => {
+  useState(() => {
     getDetails();
   }, []);
 
-if(!details.id){
-  return <></>
-}
+  if (!details.id) {
+    return <></>;
+  }
 
   return (
     <div className="show-details">
-      <img
-        src={details.backdrop_path ? `https://image.tmdb.org/t/p/original/${details.backdrop_path}` : null}
-        alt={`${details.original_name} IMAGE NOT AVAILABLE`}
-      />
+      <img src={details.backdrop_path ? `https://image.tmdb.org/t/p/original/${details.backdrop_path}` : null} alt={details.original_name} />
       <div className="show-details-inner">
         <h1>{details.original_name}</h1>
         <div className="description">{details.overview}</div>

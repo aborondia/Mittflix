@@ -1,7 +1,7 @@
 import TitleList from "./TitleList";
 import { useLocation } from "react-router-dom";
-import { getData } from "../services/apiHandler";
-import { useState, useEffect } from "react";
+import { getSearchData } from "../services/apiHandler";
+import { useState } from "react";
 
 const Search = ({ inWatchList, handleClick, handleToggle }) => {
   const location = useLocation();
@@ -9,35 +9,19 @@ const Search = ({ inWatchList, handleClick, handleToggle }) => {
   const label = new URLSearchParams(location.search).get("label");
   const [searchResults, setSearchResults] = useState([]);
 
-  const apiKey = "45db535623e9d1a035b7e71efd956de0";
-
-  const searchURL = {
-    get: (searchInput) => {
-      return `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&language=en-CA&page=1&include_adult=false&query=${searchInput}`;
-    },
-  };
-
   const getSearchResults = async () => {
-    const URL = searchURL.get(query);
-
-    await getData(URL)
+    await getSearchData(query)
       .then((data) => setSearchResults(data.results))
       .catch((error) => console.log(error));
   };
 
-  useEffect(() => {
+  useState(() => {
     getSearchResults();
   }, []);
 
   return (
     <>
-      <TitleList
-        label={label}
-        shows={searchResults}
-        inWatchList={inWatchList}
-        handleClick={handleClick}
-        handleToggle={handleToggle}
-      />
+      <TitleList label={label} shows={searchResults} inWatchList={inWatchList} handleClick={handleClick} handleToggle={handleToggle} />
     </>
   );
 };
