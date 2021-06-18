@@ -1,6 +1,6 @@
 import Show from "./Show";
 
-const TitleList = ({ label, shows, handleClick, handleToggle,inWatchList }) => {
+const TitleList = ({ label, shows, inWatchList, handleClick, handleToggle }) => {
 	return (
 		<div className="titleList">
 			<div className="title">

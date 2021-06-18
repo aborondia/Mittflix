@@ -1,9 +1,15 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
 
-const Show = ({ show, handleClick, handleToggle, inWatchList }) => {
+const Show = ({ show, inWatchList, handleClick, handleToggle }) => {
+	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
+	const [watchList, setWatchList] = useState([])
 	const image = show.poster_path;
 	const rating = show.vote_average;
+
 	const saved = inWatchList(show);
+
+
 	return (
 		<div className="movie" onClick={() => handleClick(show)}>
 			<Link to={`/details/${show.id}`}>

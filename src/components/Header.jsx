@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
-
+import { useHistory, useLocation } from "react-router-dom";
 
 const Header = ({ handleSubmit }) => {
 	const [searchInput, setSearchInput] = useState('');
-	let history = useHistory();
+	const history = useHistory();
+	const location = useLocation();
 
 	return (
 		<header className="header">
@@ -17,11 +17,14 @@ const Header = ({ handleSubmit }) => {
 					</ul>
 				</nav>
 			</div>
-			<form id="search" className="search" onSubmit={(event) => {
+			<form id="search" className="search" onSubmit={async (event) => {
+				event.preventDefault();
+				history.push(
+					{
+						pathname: '/search',
+						search: `query=${searchInput}&label='Search Results'`,
+					})
 				setSearchInput('')
-				handleSubmit(event, searchInput)
-					.then(() => history.push('/search'))
-
 			}}>
 				<input type="search" placeholder="Search for a title..." value={searchInput} onChange={(event) => setSearchInput(event.target.value)} />
 				<div className="searchResults"></div>

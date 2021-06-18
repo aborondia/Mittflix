@@ -1,13 +1,17 @@
 import './App.css';
 import './reset.css';
 import { useState, useEffect } from 'react';
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory, useLocation } from "react-router-dom";
 import Main from './components/Main';
 import Header from './components/Header';
 import Details from './components/Details';
+import Search from './components/Search';
 import { getData } from './services/apiHandler';
 
+
 function App() {
+	const history = useHistory();
+	const location = useLocation();
 	const [popularShows, setPopularShows] = useState([])
 	const [searchResults, setSearchResults] = useState([])
 	const [selectedMovieDetails, setSelectedMovieDetails] = useState({});
@@ -22,12 +26,6 @@ function App() {
 	const popularShowsURL = {
 		get: (id) => {
 			return `https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&language=en-CA&sort_by=popularity.desc&page=1&with_watch_providers=${id}&watch_region=CA`;
-		}
-	};
-
-	const searchURL = {
-		get: (searchInput) => {
-			return `https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&language=en-CA&page=1&include_adult=false&query=${searchInput}`;
 		}
 	};
 
@@ -51,15 +49,11 @@ function App() {
 	}
 
 	const getShowDetails = (show) => {
-		setSelectedMovieDetails(show);
-	}
-
-	const getSearchResults = async (event, searchInput) => {
-		event.preventDefault();
-		const URL = searchURL.get(searchInput);
-		await getData(URL)
-			.then(data => setSearchResults({ label: 'Search Results', showList: data }))
-			.catch(error => console.log(error))
+		history.push(
+			{
+				pathname: '/details',
+				search: `id=${show.id}`,
+			})
 	}
 
 	const getPopularShows = async () => {
@@ -81,20 +75,19 @@ function App() {
 	}
 
 	useEffect(() => {
-		localStorage.setItem('watchList', JSON.stringify(watchList))
-	}, [watchList])
 
-	useEffect(() => {
 		getPopularShows();
-		
 		setWatchList(JSON.parse(localStorage.watchList));
 	}, [])
 
+	useEffect(() => {
+		localStorage.setItem('watchList', JSON.stringify(watchList))
+	}, [watchList])
 
 	return (
 		<>
 			<Header
-				handleSubmit={getSearchResults}
+			// handleSubmit={getSearchResults}
 			/>
 			<Switch>
 				<Route exact path='/'>
@@ -107,7 +100,7 @@ function App() {
 				</Route>
 
 				<Route exact path='/search'>
-					<Main
+					<Search
 						showsToDisplay={[searchResults]}
 						inWatchList={checkWatchList}
 						handleClick={getShowDetails}
@@ -118,9 +111,9 @@ function App() {
 				<Route exact path='/watch-list'>
 					<Main
 						showsToDisplay={[{ label: 'Watch List', showList: watchList }]}
-						inWatchList={checkWatchList}
-						handleClick={getShowDetails}
-						handleToggle={toggleWatchedList}
+					// inWatchList={checkWatchList}
+					// handleClick={getShowDetails}
+					// handleToggle={toggleWatchedList}
 					/>
 				</Route>
 

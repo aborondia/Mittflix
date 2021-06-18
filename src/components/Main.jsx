@@ -1,6 +1,6 @@
 import TitleList from './TitleList';
 
-const Main = ({ showsToDisplay, handleClick, handleToggle, inWatchList }) => {
+const Main = ({ showsToDisplay, inWatchList, handleClick, handleToggle }) => {
 	return (<>
 		{showsToDisplay.map((listCategory, index) => {
 			return (
