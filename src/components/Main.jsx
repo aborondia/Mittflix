@@ -3,11 +3,11 @@ import TitleList from "./TitleList";
 const Main = ({ showsToDisplay, inWatchList, handleClick, handleToggle }) => {
   return (
     <>
-      {showsToDisplay.map((listCategory, index) => {
+      {showsToDisplay.map((provider, index) => {
         return (
           <TitleList
-            label={listCategory.label}
-            shows={listCategory.showList.results ? listCategory.showList.results : listCategory.showList}
+            label={provider.label}
+            shows={provider.showList.results ? provider.showList.results : provider.showList}
             inWatchList={inWatchList}
             handleClick={handleClick}
             handleToggle={handleToggle}

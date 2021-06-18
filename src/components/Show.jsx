@@ -14,8 +14,8 @@ const Show = ({ show, inWatchList, handleClick, handleToggle }) => {
         <div className="rating">{rating !== 0 ? `${rating}/10` : "No Rating Available"}</div>
         <div className="plot">{show.overview}</div>
       </div>
-      <div data-toggled={saved} className="listToggle" onClick={() => handleToggle(show)}>
-        <div>
+      <div data-toggled={saved} className="listToggle toggle" onClick={() => handleToggle(show)}>
+        <div className='toggle'>
           <i className="fa fa-fw fa-plus"></i>
           <i className="fa fa-fw fa-check"></i>
         </div>

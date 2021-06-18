@@ -7,6 +7,7 @@ import Header from "./components/Header";
 import Details from "./components/Details";
 import Search from "./components/Search";
 import { getPopularShowsData } from "./services/apiHandler";
+import WatchList from "./components/WatchList";
 
 function App() {
   const history = useHistory();
@@ -24,23 +25,25 @@ function App() {
   };
 
   const toggleWatchedList = (show) => {
-    const showInWatchList = watchList.find((watchListShow) => watchListShow?.id === show.id);
-    const newWatchList = [...watchList];
+    const showInWatchList = watchList.find((watchListShow) => watchListShow.id === show.id);
+    let newWatchList = [...watchList];
 
     if (showInWatchList) {
-      setWatchList(watchList.filter((watchListShow) => watchListShow?.id !== show.id));
+      newWatchList = newWatchList.filter((watchListShow) => watchListShow?.id !== show.id);
     }
 
     if (!showInWatchList) {
       newWatchList.push(show);
-      setWatchList(newWatchList);
     }
+
+    setWatchList(newWatchList);
   };
 
   const getShowDetails = (event, show) => {
-    if (event.target.classList.contains("fa")) {
+    if (event.target.classList.contains("toggle")) {
       return;
     }
+
     history.push({
       pathname: "/details",
       search: `id=${show.id}`,
@@ -48,24 +51,24 @@ function App() {
   };
 
   const getPopularShows = async () => {
-    const dataPromises = [];
+    const promises = [];
     const showLists = [];
 
     for (let provider of providers) {
       await getPopularShowsData(provider.id)
-        .then((data) => {
-          const promise = data;
+        .then((promise) => {
           showLists.push({ label: provider.label, showList: promise });
-          dataPromises.push(promise);
+          promises.push(promise);
         })
         .catch((error) => console.log(error));
     }
 
-    await Promise.all(dataPromises).then(() => setPopularShows(showLists));
+    Promise.all(promises).then(() => setPopularShows(showLists));
   };
 
-  useState(() => {
+  useEffect(() => {
     getPopularShows();
+
     if (localStorage.watchList) {
       setWatchList(JSON.parse(localStorage.watchList));
     }
@@ -79,24 +82,33 @@ function App() {
     <>
       <Header />
       <Switch>
-        <Route exact path="/">
-          <Main showsToDisplay={popularShows} inWatchList={checkWatchList} handleClick={getShowDetails} handleToggle={toggleWatchedList} />
-        </Route>
-
-        <Route exact path="/search">
-          <Search inWatchList={checkWatchList} handleClick={getShowDetails} handleToggle={toggleWatchedList} />
-        </Route>
-
-        <Route exact path="/watch-list">
+        <Route exact path='/'>
           <Main
-            showsToDisplay={[{ label: "Watch List", showList: watchList }]}
+            showsToDisplay={popularShows}
             inWatchList={checkWatchList}
             handleClick={getShowDetails}
             handleToggle={toggleWatchedList}
           />
         </Route>
 
-        <Route exact path="/details">
+        <Route exact path='/search'>
+          <Search
+            inWatchList={checkWatchList}
+            handleClick={getShowDetails}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
+
+        <Route exact path='/watch-list'>
+          <WatchList
+            showsToDisplay={watchList}
+            inWatchList={checkWatchList}
+            handleClick={getShowDetails}
+            handleToggle={toggleWatchedList}
+          />
+        </Route>
+
+        <Route exact path='/details'>
           <Details inWatchList={checkWatchList} handleToggle={toggleWatchedList} />
         </Route>
       </Switch>

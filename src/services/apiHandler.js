@@ -32,21 +32,21 @@ export const getData = async (url) => {
 
 export const getSearchData = (query) => {
   const URL = searchURL.get(query);
-  const results = getData(URL).then((data) => data);
+  const results = getData(URL);
 
   return results;
 };
 
 export const getShowDetailsData = (id) => {
   const URL = detailsURL.get(id);
-  const results = getData(URL).then((data) => data);
+  const results = getData(URL);
 
   return results;
 };
 
 export const getPopularShowsData = (providerId) => {
   const URL = popularShowsURL.get(providerId);
-  const results = getData(URL).then((data) => data);
+  const results = getData(URL);
 
   return results;
 };

@@ -345,3 +345,7 @@ a {
 .fa {
   cursor: pointer;
 }
+
+i{
+  pointer-events: none;
+}

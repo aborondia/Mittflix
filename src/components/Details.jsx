@@ -1,6 +1,6 @@
 import { getShowDetailsData } from "../services/apiHandler";
 import { useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Details = ({ inWatchList, handleToggle }) => {
   const location = useLocation();
@@ -13,17 +13,18 @@ const Details = ({ inWatchList, handleToggle }) => {
       .catch((error) => console.log(error));
   };
 
-  useState(() => {
+  useEffect(() => {
     getDetails();
-  }, []);
+  }, [id]);
 
   if (!details.id) {
     return <></>;
   }
 
   return (
-    <div className="show-details">
-      <img src={details.backdrop_path ? `https://image.tmdb.org/t/p/original/${details.backdrop_path}` : null} alt={details.original_name} />
+    <div id='something' className="show-details" >
+      
+      <img src={details.backdrop_path ? `https://image.tmdb.org/t/p/original/${details.backdrop_path}` : '/empty.png'} alt={details.original_name} />
       <div className="show-details-inner">
         <h1>{details.original_name}</h1>
         <div className="description">{details.overview}</div>
