@@ -1,19 +1,19 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useHistory } from "react-router-dom";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const Header = () => {
-  const [searchInput, setSearchInput] = useState("");
   const history = useHistory();
-  const logoImageLink = "https://fontmeme.com/permalink/190707/fd4735271a0d997cbe19a04408c896fc.png";
+  const logoImageLink = 'https://fontmeme.com/permalink/190707/fd4735271a0d997cbe19a04408c896fc.png';
+  const [searchInput, setSearchInput] = useState('');
 
   const goToSearchPage = (event) => {
     event.preventDefault();
     history.push({
-      pathname: "/search",
+      pathname: '/search',
       search: `query=${searchInput}`,
     });
-    setSearchInput("");
+    setSearchInput('');
   };
 
   return (
@@ -24,9 +24,9 @@ const Header = () => {
       <div id='navigation' className='navigation'>
         <nav>
           <ul>
-            <li>
-              <Link to='/watch-list'>Watch List</Link>
-            </li>
+            <Link to='/watch-list'>
+              <li>Watch List</li>
+            </Link>
           </ul>
         </nav>
       </div>
