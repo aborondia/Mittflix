@@ -69,7 +69,7 @@ function App() {
           <Search inWatchList={checkWatchList} handleClick={getShowDetails} handleToggle={toggleWatchedList} />
         </Route>
 
-        <Route exact path='/watch-list'>
+        <Route exact path='/watchlist'>
           <WatchList
             showsToDisplay={watchList}
             inWatchList={checkWatchList}

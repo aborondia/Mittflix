@@ -24,7 +24,7 @@ const Header = () => {
       <div id='navigation' className='navigation'>
         <nav>
           <ul>
-            <Link to='/watch-list'>
+            <Link to='/watchlist'>
               <li>Watch List</li>
             </Link>
           </ul>
